@@ -3,3 +3,4 @@
 
 [example:vars]
 new_hostname=centos7
+groups_to_ensure=["devops", "qa", "dev"]

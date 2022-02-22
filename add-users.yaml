@@ -1,0 +1,25 @@
+---
+- hosts: example
+  become: true
+  become_method: sudo
+  tasks:
+
+  - name: Get the necessary variables
+    include_vars:
+      file: users-to-add.yaml
+      name: users_to_add
+
+  - name: Ensure group "{{ item }}" exists
+    group:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ groups_to_ensure }}"
+    register: groups_exist
+
+  - name: Add users
+    ansible.builtin.user:
+      name: "{{ item.name }}"
+      state: present
+      groups: "{{ item.groups }}"
+    loop: "{{ users_to_add['users_to_add'] }}"
+    when: groups_exist is succeeded

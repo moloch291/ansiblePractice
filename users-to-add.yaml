@@ -1,0 +1,8 @@
+---
+users_to_add:
+  - name: user4
+    groups: devops
+  - name: user5
+    groups: qa
+  - name: user6
+    groups: dev
