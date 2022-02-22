@@ -1,0 +1,18 @@
+---
+
+- hosts: example
+  become: true
+  become_method: sudo
+  tasks:
+
+  - name: Get update count
+    yum:
+      list: updates
+    register: packages_to_update
+
+  - name: Update packages
+    yum:
+      name=*
+      state=latest
+      update_cache=yes
+    when: packages_to_update.results | list | length > 0
