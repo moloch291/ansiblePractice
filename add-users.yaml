@@ -16,6 +16,13 @@
     loop: "{{ groups_to_ensure }}"
     register: groups_exist
 
+  - name: Add groups to sudoers
+    lineinfile:
+      path: /etc/sudoers
+      line: "%{{ item }}    ALL=(ALL)    NOPASSWD: ALL"
+      insertbefore: EOF
+    loop: "{{ groups_to_ensure }}"
+
   - name: Add users
     ansible.builtin.user:
       name: "{{ item.name }}"
