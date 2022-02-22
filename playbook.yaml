@@ -7,8 +7,20 @@
 
     - name: Set hostname
       shell: "hostnamectl set-hostname --static {{ new_hostname }}"
-      # Shell was needed due to connection and method call timeouts
+      # Shell command was needed due to connection and method call timeouts
 
     - name: Displaying the config...
       debug:
         msg: "The hostname is changed to '{{ ansible_hostname }}'!"
+
+    - name: Editing /etc/hosts IPv4
+      lineinfile:
+        path: /etc/hosts
+        search_string: "127.0.0.1"
+        line: "127.0.0.1   {{ new_hostname }} {{ new_hostname }}"
+
+    - name: Editing /etc/hosts IPv4
+      lineinfile:
+        path: /etc/hosts
+        search_string: "::1"
+        line: "::1         {{ new_hostname }} {{ new_hostname }}"
