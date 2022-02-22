@@ -1,0 +1,14 @@
+---
+
+- hosts: example
+  become: true
+  become_method: sudo
+  tasks:
+
+    - name: Set hostname
+      shell: "hostnamectl set-hostname --static {{ new_hostname }}"
+      # Shell was needed due to connection and method call timeouts
+
+    - name: Displaying the config...
+      debug:
+        msg: "The hostname is changed to '{{ ansible_hostname }}'!"
