@@ -6,7 +6,7 @@
 
   - name: Get the necessary variables
     include_vars:
-      file: users-to-add.yaml
+      file: variables/users.yaml
       name: users_to_add
 
   - name: Ensure group "{{ item }}" exists
