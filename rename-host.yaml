@@ -28,5 +28,7 @@
     - name: Get new name
       shell: hostname
       register: changed_hostname
+      when: task_result is succeeded and task_result2 is succeeded
+  
     - debug:
         var: changed_hostname.stdout_lines
