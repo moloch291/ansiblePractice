@@ -10,7 +10,7 @@
       file: ../variables/users.yaml
       name: users_to_add
 
-  - name: Ensure group "{{ item }}" exists
+  - name: Ensure groups exist
     group:
       name: "{{ item }}"
       state: present
@@ -40,3 +40,25 @@
       key: "{{ lookup('file', '../public_keys/{{ item.name }}.pub') }}"
     loop: "{{ users_to_add['users_to_add'] }}"
     when: users_added is succeeded
+
+  
+  - name: Get line from sshd config
+    command: grep "^AllowUsers " /etc/ssh/sshd_config
+    register: old_user_list
+
+  - name: Allow user SSH login
+    replace:
+      backup: yes
+      dest: /etc/ssh/sshd_config
+      regexp: '^(AllowUsers(?!.*\b{{ item.name }}\b).*)$'
+      replace: '\1 {{ item.name }}'
+    when: "{{ item.name not in old_user_list }}"
+    loop: "{{ users_to_add['users_to_add'] }}"
+    notify:
+      - Reload sshd
+
+  handlers:
+  - name: Reload sshd
+    service:
+      name: sshd
+      state: reloaded
